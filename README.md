@@ -8,8 +8,6 @@ An interest rate swap is an agreement between two counterparties in which one st
 
 From: https://www.investopedia.com/terms/i/interestrateswap.asp
 
-
-
 https://ipfs.io/ipfs/QmXoypizjW3WknFiJnKLwHCnL72vedxjQkDDP1mXWo6uco/wiki/Interest_rate_swap.html
 
 
