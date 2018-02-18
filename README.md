@@ -4,8 +4,6 @@ This repo is the final project for the Blockchain course CED0104, which is an In
 Authors of the Final Capstone Project:
 Chris Stephens and Lawrence Jordan
 
-We have submitted 3 Versions of an Interest Rate Swap Contract:
-
 ## Smart Contract - InterestRateSwapTwo.sol
    This contract takes a starting market value and calculates two interest rates againinst it, one that is fixed and the other that is a variable rate plus the libor rate. The contract expires once the total payouts are more than the inital starting market value of the contract.
    
