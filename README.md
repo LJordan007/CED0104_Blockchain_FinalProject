@@ -4,6 +4,7 @@ This repo is the final project for the Blockchain course CED0104, which is an In
 Authors of the Final Capstone Project:
 Chris Stephens and Lawrence Jordan
 
+There are two smart contracts that were created for this capstone project
 
 ## Smart Contract - InterestRateSwapOne.sol
 This is just a simple Interest Rate Contract, that takes a fixed rate, variable rate, libor rate and two address from the two contract participants and calculates what the payout is.
