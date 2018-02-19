@@ -42,7 +42,7 @@ library SafeMath {
     return c;
   }
 }
-contract interestRateSwapThree {
+contract InterestRateSwapThree {
  using SafeMath for uint256;
     string outputMessage;
     string outputContractStatus;
@@ -62,6 +62,7 @@ contract interestRateSwapThree {
     uint256 totalPayout=0;
 
     bool dateContract;
+    bool contractRun;
     uint256 dateContractType;
     uint256 dateContractValue;
     uint256 dateContractValueLeft;
@@ -69,7 +70,7 @@ contract interestRateSwapThree {
     mapping (address => uint) public balanceOwed;
 
  // Sets the contract details between each contract participant
- function interestRateSwapThree(address _fixedRateBuyer, address _variableRateBuyer, uint256 _fixedRate, uint256 _variableRate, uint256 _liborRate, uint256 _nomMarketValue) public {
+ function InterestRateSwapThree(address _fixedRateBuyer, address _variableRateBuyer, uint256 _fixedRate, uint256 _variableRate, uint256 _liborRate, uint256 _nomMarketValue) public {
      owner = msg.sender;
 
      // Aggreed upon contract details between two parties
@@ -84,8 +85,6 @@ contract interestRateSwapThree {
      // Multiply the market value by 100 since interest rates have been normalized by multipling by 100 to remove decimals
      nomMarketValue = _nomMarketValue*100;
 
-
-
      // Assign the values for the fixed rate buyer
      fixedRateBuyer = _fixedRateBuyer;
      fixedRate = _fixedRate;
@@ -93,7 +92,6 @@ contract interestRateSwapThree {
      // Assign the values for the variable rate buyer
      variableRateBuyer = _variableRateBuyer;
      variableRateAndLibor = _variableRate + _liborRate;
-
  }
 
  //Only allow the creator of the project to set values
@@ -110,8 +108,8 @@ contract interestRateSwapThree {
  }
 
  function setDateSwapPayment(uint256 _dateContractType, uint256 _dateContractValue) onlyOwner {
- //DateContractType - Accepts a integer daily(1) or monthly(2)
- //DateContractValue - Accepts a interger for length of contract for days, months, or years
+    //dateContractType - Accepts a integer daily(1) or monthly(2)
+    //dateContractValue - Accepts a integer for length of contract for days or months that is between 0 and 365
     require (_dateContractValue >= 0 && _dateContractValue <= 365);
     require (_dateContractType >=1 && _dateContractType <= 2 );
 
@@ -120,6 +118,7 @@ contract interestRateSwapThree {
     dateContractValue = _dateContractValue;
     dateContractValueLeft = _dateContractValue;
 
+    //Reset all the values
     fixedPayout = 0;
     variablePayout = 0;
     currentPayout = 0;
@@ -132,8 +131,12 @@ contract interestRateSwapThree {
  }
 
  function runDateSwapPayment(){
+    //Run the date based interest rate swap payment
     fixedPayout = (nomMarketValue * fixedRate)/100;
     variablePayout = (nomMarketValue * variableRateAndLibor)/100;
+
+    //Set the bool value contractRun equal to true
+    contractRun = true;
 
     if (dateContract == true) {
         if (dateContractType == 1) {
@@ -158,8 +161,12 @@ contract interestRateSwapThree {
  }
 
  function calcValues() {
-      //Calculate various values for the contract
-      if(startNomMarketValue>=totalPayout){
+    //Calculate various values for the contract getContractStatus, getContractPayout, and getContractDetails
+
+    //This Function will only run if runDateSwayPayment is previously called
+    require(contractRun == true);
+
+    if (startNomMarketValue>=totalPayout) {
 
       // Fixed Interest is higher so Variable Rate Wins
       if (fixedPayout > variablePayout) {
@@ -185,7 +192,6 @@ contract interestRateSwapThree {
         outputMessage = "Nominal Market Value is 0, Total Payout is greater than Nominal Market Value contract has expired";
         nomMarketValue = 0;
         outputContractStatus = "Active";
-        //selfdestruct(owner);
     }
  }
 
