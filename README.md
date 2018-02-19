@@ -23,8 +23,6 @@ Values to be added in Create function below in Solidty to run this contract: Fix
    This contract takes a starting market value and calculates two interest rates againinst it, one that is fixed and the other that is a variable rate plus the libor rate. The contract expires once the total payouts are more than the inital starting market value of the contract.
 
    ## The functions that can be used with in this contract:
-  * ### setDateSwapPayment: This function lets the owner of the contract set a Date based InterestRateSwap contract.
-  * ### runDateSwapPayment: If setDateSwapPayment has been run with valid values, the owner of the contract could execute the Date InterestRateSwap contact.
   * #### calculateSwapPayment: this function calculates the winner of the new Libor rate entered
   * #### getContractPayout: This returns the last calculated payout from the calculateSwapPayment function, starting nominal market value of the contract, balanced paid out, and who gets paid the payout based on the new libor rate entered in the contract
   * #### setLiborRate: this allows for a new Libor rate to be entered, libor rates change daily so new rates need to be entered into the contract to calculate the end of day payout to either the fixed or variable owner of the contract    

@@ -61,10 +61,6 @@ contract interestRateSwapTwo {
     uint256 startNomMarketValue;
     uint256 totalPayout=0;
 
-    bool dateContract;
-    uint256 dateContractType;
-    uint256 dateContractValue;
-    uint256 dateContractValueLeft;
 
     mapping (address => uint) public balanceOwed;
 
@@ -112,53 +108,6 @@ contract interestRateSwapTwo {
    variableRateAndLibor = variableRate + liborRate;
  }
 
- function setDateSwapPayment(uint256 _dateContractType, uint256 _dateContractValue) onlyOwner {
- //DateContractType - Accepts a integer daily(1) or monthly(2)
- //DateContractValue - Accepts a interger for length of contract for days, months, or years
-    require (_dateContractValue >= 0 && _dateContractValue <= 365);
-    require (_dateContractType >=1 && _dateContractType <= 2 );
-
-    dateContract = true;
-    dateContractType = _dateContractType;
-    dateContractValue = _dateContractValue;
-    dateContractValueLeft = _dateContractValue;
-
-    fixedPayout = 0;
-    variablePayout = 0;
-    currentPayout = 0;
-    totalPayout = 0;
-    balanceOwed[fixedRateBuyer] = 0;
-    balanceOwed[variableRateBuyer] = 0;
-
-    outputMessage = "Date contract is set";
-    outputContractStatus = "Active";
- }
-
- function runDateSwapPayment(){
-    fixedPayout = (nomMarketValue * fixedRate)/100;
-    variablePayout = (nomMarketValue * variableRateAndLibor)/100;
-
-    if (dateContract == true) {
-        if (dateContractType == 1) {
-            //daily
-            while (dateContractValueLeft != 0) {
-                outputMessage = "Daily contract is active";
-                calcValues();
-                dateContractValueLeft--;
-            }
-            outputMessage = "Daily contract is done";
-        }
-        if (dateContractType == 2) {
-            //monthly
-            while (dateContractValueLeft != 0) {
-                outputMessage = "Monthly contract is active";
-                calcValues();
-                dateContractValueLeft--;
-            }
-            outputMessage = "Monthly contract is done";
-        }
-    }
- }
 /** Calculates the payout to either the fixed or variable buyer
  * Contract expires when market value has gone down to 0,
  * since the payout gets subtracted from the total market value after each Libor rate update
@@ -173,12 +122,7 @@ contract interestRateSwapTwo {
 
      //Principle += Principle* InterestRateInteger/100;
 
-      calcValues();
-  }
-
-  function calcValues() {
-      //Calculate various values for the contract
-      if(startNomMarketValue>=totalPayout){
+    if(startNomMarketValue>=totalPayout){
 
       // Fixed Interest is higher so Variable Rate Wins
       if (fixedPayout > variablePayout) {
@@ -206,19 +150,20 @@ contract interestRateSwapTwo {
         outputContractStatus = "Active";
         //selfdestruct(owner);
     }
-  }
 
+
+  }
  // Returns payout value of IRS contract to the Fixed or Variable Buyer
  function getContractPayout() constant public returns(string, uint256, uint256, uint256, uint256) {
     //Display current contract details/past payout of the last swap, and the current balanceOwed;
-    return (outputMessage, currentPayout/1000 , startNomMarketValue, balanceOwed[fixedRateBuyer], balanceOwed[variableRateBuyer]);
+    return (outputMessage, currentPayout, startNomMarketValue, balanceOwed[fixedRateBuyer], balanceOwed[variableRateBuyer]);
  }
  // Returns what the contract details are between the two parties
  function getContractDetails() constant public returns (address, address, uint256, uint256, uint256, uint256, uint256) {
     return (fixedRateBuyer, variableRateBuyer, fixedRate, liborRate, variableRate, variableRateAndLibor, nomMarketValue);
  }
 
- function getContractStatus() constant public returns (uint256, uint256, string){
-    return(startNomMarketValue, totalPayout, outputMessage);
- }
+    function getContractStatus() constant public returns (uint256, uint256, string){
+        return(startNomMarketValue,  totalPayout, outputMessage);
+    }
 }
